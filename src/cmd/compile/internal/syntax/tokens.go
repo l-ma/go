@@ -68,6 +68,12 @@ const (
 	_Type        // type
 	_Var         // var
 
+	// linq tokens
+	_From  // from
+	_In    // in
+	_Where // where
+	// select is already a keyword and will be reused
+
 	// empty line comment to exclude it from .String
 	tokenCount //
 )
