@@ -449,6 +449,15 @@ type (
 		Rbrace Pos
 		stmt
 	}
+
+	// FromStmt -> "from" Expr "in" Expr "where" Expr "select" Expr
+	FromStmt struct {
+		X      Expr // from X
+		Y      Expr // in Y
+		Where  Expr
+		Select Expr
+		stmt
+	}
 )
 
 type (
