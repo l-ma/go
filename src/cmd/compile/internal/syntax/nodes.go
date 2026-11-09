@@ -239,6 +239,15 @@ type (
 		expr
 	}
 
+	// FromExpr -> "from" Expr "in" Expr "where" Expr "select" Expr
+	FromExpr struct {
+		X      Expr // from X
+		Y      Expr // in Y
+		Where  Expr
+		Select Expr
+		expr
+	}
+
 	// X.(type)
 	// Lhs := X.(type)
 	TypeSwitchGuard struct {
@@ -447,15 +456,6 @@ type (
 	SelectStmt struct {
 		Body   []*CommClause
 		Rbrace Pos
-		stmt
-	}
-
-	// FromStmt -> "from" Expr "in" Expr "where" Expr "select" Expr
-	FromStmt struct {
-		X      Expr // from X
-		Y      Expr // in Y
-		Where  Expr
-		Select Expr
 		stmt
 	}
 )
