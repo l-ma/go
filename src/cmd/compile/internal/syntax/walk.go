@@ -170,6 +170,12 @@ func (w walker) node(n Node) {
 	case *ListExpr:
 		w.exprList(n.ElemList)
 
+	case *FromExpr:
+		w.node(n.X)
+		w.node(n.Y)
+		w.node(n.E)
+		w.node(n.A)
+
 	// types
 	case *ArrayType:
 		if n.Len != nil {
