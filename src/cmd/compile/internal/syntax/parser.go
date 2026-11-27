@@ -981,6 +981,38 @@ func (p *parser) unaryExpr() Expr {
 	return p.pexpr(nil, true)
 }
 
+func (p *parser) wantInQuery(word string) {
+	// check that the token is indeed a _Name token and then can check that it's one of the specific names we need
+	if p.tok == _Name && p.lit == word {
+		p.next() // consume the token
+		return
+	}
+	// same as want()
+	p.syntaxError("expected " + word)
+	p.advance()
+}
+
+// FromExpr = "from" Name "in" Expr "where" Expr "select" Expr
+func (p *parser) fromExpr(pos Pos) Expr {
+	if trace {
+		defer p.trace("fromExpr")()
+	}
+
+	s := new(FromExpr)
+	s.pos = pos
+
+	// "from" was already consumed in the case _Name
+	s.X = p.name()         // consume name for From
+	p.wantInQuery("in")    // consume _In
+	s.Y = p.expr()         // consume expresion for In
+	p.wantInQuery("where") // consume _Where
+	s.E = p.expr()         // consume expression for Where
+	p.want(_Select)        // consume _Select (still a real keyword)
+	s.A = p.expr()         // consume expression for Select
+
+	return s
+}
+
 // callStmt parses call-like statements that can be preceded by 'defer' and 'go'.
 func (p *parser) callStmt() *CallStmt {
 	if trace {
@@ -1014,6 +1046,14 @@ func (p *parser) operand(keep_parens bool) Expr {
 
 	switch p.tok {
 	case _Name:
+		if p.lit == "from" {
+			pos := p.pos()
+			name := p.name()    // consume "from" -- have to consume from before we can look at the next token, because the parser only sees one token at a time. That's why fromExpr takes the position instead of calling p.want(_From) itself.
+			if p.tok == _Name { // from followed by name is a query
+				return p.fromExpr(pos)
+			}
+			return name // otherwise it's just a normal variable
+		}
 		return p.name()
 
 	case _Literal:
