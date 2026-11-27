@@ -1179,6 +1179,18 @@ func (check *Checker) exprInternal(T *target, x *operand, e syntax.Expr) exprKin
 		x.mode_ = commaok
 		x.typ_ = T
 
+	// FromExpr -> "from" X "in" Y "where" E "select" A
+	// X must be type T
+	// Y must be a data structure that you can query over containing elements of type T
+	// E must be a boolean
+	// A can be any type R
+	case *syntax.FromExpr:
+		// same way that for range clause declares its iteration variable
+		check.fromExpr(x, e)
+		if !x.isValid() {
+			goto Error
+		}
+
 	case *syntax.TypeSwitchGuard:
 		// x.(type) expressions are handled explicitly in type switches
 		check.error(e, InvalidSyntaxTree, "use of .(type) outside type switch")
