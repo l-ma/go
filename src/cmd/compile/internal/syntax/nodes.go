@@ -239,12 +239,13 @@ type (
 		expr
 	}
 
-	// FromExpr -> "from" Expr "in" Expr "where" Expr "select" Expr
+	// FromExpr -> "from" Name "in" Expr "where" Expr "select" Expr
+	// FromExpr -> "from" X "in" Y "where" E "select" A
 	FromExpr struct {
-		X      Expr // from X
-		Y      Expr // in Y
-		Where  Expr
-		Select Expr
+		X *Name // from X
+		Y Expr  // in Y
+		E Expr  // where E
+		A Expr  // select A
 		expr
 	}
 
