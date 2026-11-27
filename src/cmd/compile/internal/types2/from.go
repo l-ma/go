@@ -8,9 +8,9 @@ import (
 )
 
 // fromExpr type-checks a range statement of form
-
-// 	from X in Y where E select A
-
+//
+//	from X in Y where E select A
+//
 // and sets x to a value of type []T, where T is the type of A.
 // adapted from src/cmd/compile/internal/types2/range.go
 func (check *Checker) fromExpr(x *operand, e *syntax.FromExpr) (isFuncInst bool) {
